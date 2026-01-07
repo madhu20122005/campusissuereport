@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Issue Reporter</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet Heatmap Plugin -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.min.css" />
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-map-marked-alt"></i>
+                <h1>Campus Issue Reporter</h1>
+            </div>
+            <nav>
+                <button class="btn-secondary" id="viewAnalytics">
+                    <i class="fas fa-chart-line"></i> Analytics
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Map Section -->
+        <div class="map-section">
+            <div id="map"></div>
+            <div class="map-controls">
+                <button class="control-btn" id="toggleHeatmap">
+                    <i class="fas fa-fire"></i> Toggle Heatmap
+                </button>
+                <button class="control-btn" id="myLocation">
+                    <i class="fas fa-location-arrow"></i> My Location
+                </button>
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <div class="form-section">
+            <div class="form-container">
+                <h2>Report an Issue</h2>
+                <p class="subtitle">Click on the map to select location</p>
+                
+                <form id="issueForm">
+                    <!-- Location Display -->
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-map-pin"></i> Selected Location
+                        </label>
+                        <input type="text" id="locationDisplay" readonly placeholder="Click on map to select location">
+                        <input type="hidden" id="latitude">
+                        <input type="hidden" id="longitude">
+                    </div>
+
+                    <!-- Issue Description -->
+                    <div class="form-group">
+                        <label for="description">
+                            <i class="fas fa-pencil-alt"></i> Describe the Issue *
+                        </label>
+                        <textarea 
+                            id="description" 
+                            rows="4" 
+                            placeholder="e.g., Broken water fountain near library entrance..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <!-- Category (AI will auto-classify, but user can override) -->
+                    <div class="form-group">
+                        <label for="category">
+                            <i class="fas fa-tags"></i> Category (AI will suggest)
+                        </label>
+                        <select id="category">
+                            <option value="">AI will classify...</option>
+                            <option value="plumbing">Plumbing</option>
+                            <option value="electrical">Electrical</option>
+                            <option value="safety">Safety</option>
+                            <option value="cleanliness">Cleanliness</option>
+                            <option value="infrastructure">Infrastructure</option>
+                            <option value="landscaping">Landscaping</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <!-- Photo Upload -->
+                    <div class="form-group">
+                        <label for="photo">
+                            <i class="fas fa-camera"></i> Upload Photo (Optional)
+                        </label>
+                        <div class="file-upload">
+                            <input type="file" id="photo" accept="image/*" multiple>
+                            <label for="photo" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Choose images or drag here</span>
+                            </label>
+                            <div id="imagePreview" class="image-preview"></div>
+                        </div>
+                    </div>
+
+                    <!-- AI Classification Result (shown after analysis) -->
+                    <div class="ai-result" id="aiResult" style="display: none;">
+                        <div class="ai-header">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Classification</span>
+                        </div>
+                        <div class="ai-content">
+                            <div class="ai-item">
+                                <strong>Category:</strong> <span id="aiCategory">-</span>
+                            </div>
+                            <div class="ai-item">
+                                <strong>Severity:</strong> 
+                                <span id="aiSeverity" class="severity-badge">-</span>
+                            </div>
+                            <div class="ai-item">
+                                <strong>Confidence:</strong> <span id="aiConfidence">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i> Submit Report
+                    </button>
+                </form>
+
+                <!-- Success Message -->
+                <div class="success-message" id="successMessage" style="display: none;">
+                    <i class="fas fa-check-circle"></i>
+                    <p>Issue reported successfully!</p>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div class="loading" id="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Processing with AI...</p>
+                </div>
+            </div>
+
+            <!-- Recent Issues -->
+            <div class="recent-issues">
+                <h3><i class="fas fa-history"></i> Recent Reports</h3>
+                <div id="recentList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet Heatmap Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.min.js"></script>
+
+    <!-- Firebase SDK v8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/analytics.js"></script>
+</body>
+</html>

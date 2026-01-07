@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - Campus Issue Reporter</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/analytics.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <h1>Analytics Dashboard</h1>
+            </div>
+            <nav>
+                <button class="btn-secondary" onclick="window.location.href='index.html'">
+                    <i class="fas fa-arrow-left"></i> Back to Reporter
+                </button>
+                <button class="btn-secondary" id="openLookerStudio">
+                    <i class="fas fa-external-link-alt"></i> Open Looker Studio
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="analytics-container">
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card total">
+                <div class="icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="totalIssues">0</h3>
+                    <p>Total Issues</p>
+                </div>
+            </div>
+
+            <div class="stat-card pending">
+                <div class="icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="pendingIssues">0</h3>
+                    <p>Pending</p>
+                </div>
+            </div>
+
+            <div class="stat-card progress">
+                <div class="icon">
+                    <i class="fas fa-spinner"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="inProgressIssues">0</h3>
+                    <p>In Progress</p>
+                </div>
+            </div>
+
+            <div class="stat-card resolved">
+                <div class="icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="resolvedIssues">0</h3>
+                    <p>Resolved</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Category Distribution -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-tags"></i> Category Distribution</h3>
+                </div>
+                <canvas id="categoryChart"></canvas>
+            </div>
+
+            <!-- Severity Distribution -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Severity Levels</h3>
+                </div>
+                <canvas id="severityChart"></canvas>
+            </div>
+
+            <!-- Issues Over Time -->
+            <div class="chart-card full-width">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-line"></i> Issues Over Time</h3>
+                    <div class="time-filters">
+                        <button class="filter-btn active" data-period="7">7 Days</button>
+                        <button class="filter-btn" data-period="30">30 Days</button>
+                        <button class="filter-btn" data-period="90">90 Days</button>
+                    </div>
+                </div>
+                <canvas id="timelineChart"></canvas>
+            </div>
+
+            <!-- Response Time Metrics -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-clock"></i> Average Response Time</h3>
+                </div>
+                <div class="metric-display">
+                    <div class="metric-value">
+                        <span id="avgResponseTime">0</span>
+                        <small>hours</small>
+                    </div>
+                    <canvas id="responseTimeChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Status Progress -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-tasks"></i> Resolution Rate</h3>
+                </div>
+                <div class="metric-display">
+                    <div class="progress-ring">
+                        <svg width="150" height="150">
+                            <circle cx="75" cy="75" r="60" class="progress-ring-circle-bg"></circle>
+                            <circle cx="75" cy="75" r="60" class="progress-ring-circle" id="progressCircle"></circle>
+                        </svg>
+                        <div class="progress-text">
+                            <span id="resolutionRate">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="activity-section">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                </div>
+                <div class="activity-list" id="activityList">
+                    <!-- Activity items will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Looker Studio Modal -->
+    <div class="modal" id="lookerModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>127.0.0.1:5500 says</h3>
+                <button class="modal-close" onclick="closeLookerModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <h4>Analytics Dashboard</h4>
+                <p>This would open a Looker Studio dashboard showing:</p>
+                <ul>
+                    <li>Issue trends over time</li>
+                    <li>Category distribution</li>
+                    <li>Severity heatmaps</li>
+                    <li>Response time metrics</li>
+                </ul>
+                <p style="margin-top: 15px; color: #666;">
+                    Connect your Firebase data to Looker Studio to enable this feature.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" onclick="openLookerStudioLink()">
+                    <i class="fas fa-external-link-alt"></i> Go to Looker Studio
+                </button>
+                <button class="btn-secondary" onclick="closeLookerModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK v8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/analytics.js"></script>
+</body>
+</html>

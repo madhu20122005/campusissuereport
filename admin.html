@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Campus Issue Reporter</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-user-shield"></i>
+                <h1>Admin Dashboard</h1>
+            </div>
+            <nav>
+                <button class="btn-secondary" onclick="window.location.href='analytics.html'">
+                    <i class="fas fa-chart-line"></i> Analytics
+                </button>
+                <button class="btn-secondary" onclick="window.location.href='index.html'">
+                    <i class="fas fa-arrow-left"></i> Reporter
+                </button>
+                <button class="btn-danger" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <button class="menu-item active" data-view="overview">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Overview</span>
+                </button>
+                <button class="menu-item" data-view="issues">
+                    <i class="fas fa-list"></i>
+                    <span>All Issues</span>
+                </button>
+                <button class="menu-item" data-view="map">
+                    <i class="fas fa-map"></i>
+                    <span>Map View</span>
+                </button>
+                <button class="menu-item" data-view="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </button>
+                <button class="menu-item" data-view="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview View -->
+            <div id="overview-view" class="view active">
+                <h2>Dashboard Overview</h2>
+                
+                <!-- Quick Stats -->
+                <div class="quick-stats">
+                    <div class="stat-box red">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div>
+                            <h3 id="urgentCount">0</h3>
+                            <p>Urgent Issues</p>
+                        </div>
+                    </div>
+                    <div class="stat-box yellow">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h3 id="pendingCount">0</h3>
+                            <p>Pending</p>
+                        </div>
+                    </div>
+                    <div class="stat-box blue">
+                        <i class="fas fa-tools"></i>
+                        <div>
+                            <h3 id="progressCount">0</h3>
+                            <p>In Progress</p>
+                        </div>
+                    </div>
+                    <div class="stat-box green">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h3 id="resolvedToday">0</h3>
+                            <p>Resolved Today</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Priority Issues -->
+                <div class="section-card">
+                    <h3><i class="fas fa-fire"></i> Priority Issues</h3>
+                    <div id="priorityIssues"></div>
+                </div>
+            </div>
+
+            <!-- All Issues View -->
+            <div id="issues-view" class="view">
+                <div class="view-header">
+                    <h2>All Issues</h2>
+                    <div class="filters">
+                        <select id="statusFilter">
+                            <option value="all">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="resolved">Resolved</option>
+                        </select>
+                        <select id="categoryFilter">
+                            <option value="all">All Categories</option>
+                            <option value="plumbing">Plumbing</option>
+                            <option value="electrical">Electrical</option>
+                            <option value="safety">Safety</option>
+                            <option value="cleanliness">Cleanliness</option>
+                            <option value="infrastructure">Infrastructure</option>
+                            <option value="landscaping">Landscaping</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <input type="text" id="searchInput" placeholder="Search issues...">
+                    </div>
+                </div>
+                <div class="issues-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Severity</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="issuesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Map View -->
+            <div id="map-view" class="view">
+                <h2>Map View</h2>
+                <div id="adminMap"></div>
+            </div>
+
+            <!-- Users View -->
+            <div id="users-view" class="view">
+                <h2>User Management</h2>
+                <div class="section-card">
+                    <p>User management features coming soon...</p>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settings-view" class="view">
+                <h2>Settings</h2>
+                <div class="section-card">
+                    <h3>System Configuration</h3>
+                    <p>Settings features coming soon...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Issue Detail Modal -->
+    <div id="issueModal" class="modal" style="display: none;">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Issue Details</h3>
+                <button class="modal-close" onclick="closeIssueModal()">×</button>
+            </div>
+            <div class="modal-body" id="issueModalBody">
+                <!-- Issue details will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-success" onclick="updateIssueStatus('resolved')">
+                    <i class="fas fa-check"></i> Mark Resolved
+                </button>
+                <button class="btn-primary" onclick="updateIssueStatus('in_progress')">
+                    <i class="fas fa-wrench"></i> In Progress
+                </button>
+                <button class="btn-secondary" onclick="closeIssueModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Firebase SDK v8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

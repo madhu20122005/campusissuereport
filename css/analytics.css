@@ -1,0 +1,273 @@
+/* ================= ANALYTICS BASE ================= */
+.analytics-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* ================= STATS GRID ================= */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: #ffffff;
+    border: 1px solid #dcdfe6;
+    padding: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-card .icon {
+    width: 48px;
+    height: 48px;
+    border: 1px solid #dcdfe6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+/* Status Colors (Soft & Professional) */
+.stat-card.total .icon {
+    color: #1f3c88;
+    background: #eef2ff;
+}
+
+.stat-card.pending .icon {
+    color: #b45309;
+    background: #fff7ed;
+}
+
+.stat-card.progress .icon {
+    color: #0369a1;
+    background: #f0f9ff;
+}
+
+.stat-card.resolved .icon {
+    color: #166534;
+    background: #f0fdf4;
+}
+
+.stat-info h3 {
+    font-size: 1.8rem;
+    color: #1f2937;
+}
+
+.stat-info p {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+/* ================= CHART GRID ================= */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.chart-card {
+    background: #ffffff;
+    border: 1px solid #dcdfe6;
+    padding: 1.2rem;
+}
+
+.chart-card.full-width {
+    grid-column: 1 / -1;
+}
+
+/* ================= CHART HEADER ================= */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.chart-header h3 {
+    font-size: 1rem;
+    color: #1f3c88;
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+.chart-header i {
+    color: #4a90e2;
+}
+
+/* ================= TIME FILTERS ================= */
+.time-filters {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.filter-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    border: 1px solid #dcdfe6;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.filter-btn:hover {
+    background: #f3f4f6;
+}
+
+.filter-btn.active {
+    background: #1f3c88;
+    color: #ffffff;
+    border-color: #1f3c88;
+}
+
+/* ================= METRICS ================= */
+.metric-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.metric-value span {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #1f3c88;
+}
+
+.metric-value small {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+/* ================= PROGRESS RING ================= */
+.progress-ring {
+    position: relative;
+    width: 140px;
+    height: 140px;
+}
+
+.progress-ring svg {
+    transform: rotate(-90deg);
+}
+
+.progress-ring-circle-bg {
+    fill: none;
+    stroke: #e5e7eb;
+    stroke-width: 10;
+}
+
+.progress-ring-circle {
+    fill: none;
+    stroke: #166534;
+    stroke-width: 10;
+    stroke-linecap: square;
+    stroke-dasharray: 377;
+    stroke-dashoffset: 377;
+    transition: stroke-dashoffset 0.8s ease;
+}
+
+.progress-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #166534;
+}
+
+/* ================= ACTIVITY SECTION ================= */
+.activity-section {
+    margin-top: 2rem;
+}
+
+.activity-list {
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    display: flex;
+    gap: 0.8rem;
+    padding: 0.8rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.activity-item:hover {
+    background: #f9fafb;
+}
+
+.activity-icon {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #dcdfe6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.activity-icon i {
+    color: #1f3c88;
+}
+
+.activity-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.activity-meta {
+    font-size: 0.75rem;
+    color: #6b7280;
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+/* ================= SCROLLBAR ================= */
+.activity-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.activity-list::-webkit-scrollbar-thumb {
+    background: #c7c9d1;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1200px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .analytics-container {
+        padding: 1rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+    }
+
+    .time-filters {
+        width: 100%;
+    }
+
+    .filter-btn {
+        flex: 1;
+    }
+}
